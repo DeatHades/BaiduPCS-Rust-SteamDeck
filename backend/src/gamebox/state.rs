@@ -197,4 +197,4 @@ impl Default for GameBoxState {
     }
 }
 
-use super::GameBoxError as GameBoxResult;
+use super::error::GameBoxResult;

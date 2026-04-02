@@ -1,6 +1,6 @@
 //! 游戏主程序查找器
 
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 use walkdir::WalkDir;
 
 use super::error::GameBoxResult;
@@ -173,7 +173,7 @@ impl ExeFinder {
     }
 
     /// 获取深度评分（越浅越可能是主程序）
-    fn get_depth_score(path: &PathBuf, root: &PathBuf) -> i32 {
+    fn get_depth_score(path: &Path, root: &Path) -> i32 {
         let depth = Self::get_depth(path, root);
 
         // 根目录 +10，每深入一层 -5
@@ -187,7 +187,7 @@ impl ExeFinder {
     }
 
     /// 获取路径深度
-    fn get_depth(path: &PathBuf, root: &PathBuf) -> usize {
+    fn get_depth(path: &Path, root: &Path) -> usize {
         let path_components = path.components().count();
         let root_components = root.components().count();
 

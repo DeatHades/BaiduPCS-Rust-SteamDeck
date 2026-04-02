@@ -229,7 +229,6 @@ async fn install_game(
     }
 
     // 保存游戏信息
-    let gamebox_state = crate::AppState::gamebox();
     gamebox_state.add_game(game);
 
     Ok(())

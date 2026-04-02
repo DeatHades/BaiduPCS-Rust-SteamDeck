@@ -102,7 +102,7 @@ impl Extractor {
 
     /// 检查命令是否存在
     fn command_exists(cmd: &str) -> bool {
-        Command::new("which")
+        std::process::Command::new("which")
             .arg(cmd)
             .stdout(Stdio::null())
             .stderr(Stdio::null())
