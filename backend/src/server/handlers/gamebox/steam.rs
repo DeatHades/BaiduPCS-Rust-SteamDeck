@@ -11,7 +11,7 @@ use serde::{Deserialize, Serialize};
 use crate::server::{ApiError, ApiResult};
 use crate::AppState;
 
-use crate::gamebox::{ExeFinder, ExecutableInfo, GameInfo, GameStatus, ProtonVersion, ShortcutInfo, SteamManager};
+use crate::gamebox::{ExeFinder, ExecutableInfo, GameBoxError, GameInfo, GameStatus, ProtonVersion, ShortcutInfo, SteamManager};
 
 /// 查找可执行文件请求
 #[derive(Debug, Deserialize)]
