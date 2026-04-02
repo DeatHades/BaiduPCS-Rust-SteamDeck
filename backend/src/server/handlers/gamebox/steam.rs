@@ -103,7 +103,9 @@ pub async fn remove_from_steam(
 pub async fn list_proton_versions(
     State(_app_state): State<Arc<AppState>>,
 ) -> ApiResult<Json<Vec<ProtonVersion>>> {
-    let steam_manager = match SteamManager::detect() {
+    use super::super::super::gamebox::SteamManager;
+
+    let steam_manager: SteamManager = match SteamManager::detect() {
         Ok(sm) => sm,
         Err(_) => {
             // Steam 未安装，返回默认列表

@@ -6,7 +6,7 @@ use std::io::{Read, Write as IoWrite, Seek, SeekFrom};
 use std::path::PathBuf;
 
 use super::error::{GameBoxError, GameBoxResult};
-use super::types::{GameInfo, GameStatus, ShortcutInfo};
+use super::types::{GameInfo, ShortcutInfo};
 
 /// Steam 根目录候选
 const STEAM_ROOT_CANDIDATES: &[&str] = &[

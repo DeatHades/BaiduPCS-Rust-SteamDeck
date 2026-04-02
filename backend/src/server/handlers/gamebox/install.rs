@@ -73,6 +73,7 @@ pub async fn start_install(
         let extractor = Extractor::new(gamebox_state.clone());
         let result = install_game(
             &extractor,
+            &gamebox_state,
             &req,
             &task_id,
             &progress_tx,
@@ -106,6 +107,7 @@ pub async fn start_install(
 /// 执行安装流程
 async fn install_game(
     extractor: &Extractor,
+    gamebox_state: &Arc<GameBoxState>,
     req: &StartInstallRequest,
     task_id: &str,
     progress_tx: &mpsc::Sender<InstallProgress>,
@@ -128,7 +130,7 @@ async fn install_game(
         .extract(
             &req.archive_path,
             &req.install_dir,
-            |progress, msg| {
+            |progress: f32, msg: &str| {
                 let _ = progress_tx.try_send(InstallProgress {
                     task_id: task_id.to_string(),
                     step: InstallStep::Extracting,
