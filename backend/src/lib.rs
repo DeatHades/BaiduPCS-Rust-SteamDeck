@@ -49,6 +49,9 @@ pub mod task_slot_pool;
 // 🔥 Web 访问认证模块
 pub mod web_auth;
 
+// 🔥 SteamDeck 游戏盒子模块
+pub mod gamebox;
+
 // 导出常用类型
 pub use auth::{LoginRequest, LoginResponse, QRCode, QRCodeStatus, UserAuth};
 pub use config::AppConfig;

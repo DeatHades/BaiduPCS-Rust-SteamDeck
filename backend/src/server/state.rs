@@ -9,6 +9,7 @@ use crate::autobackup::AutoBackupManager;
 use crate::common::{MemoryMonitor, MemoryMonitorConfig};
 use crate::config::AppConfig;
 use crate::downloader::{DownloadManager, FolderDownloadManager};
+use crate::gamebox::GameBoxState;
 use crate::netdisk::{CloudDlMonitor, NetdiskClient};
 use crate::persistence::{
     cleanup_completed_tasks, cleanup_invalid_tasks, scan_recoverable_tasks, DownloadRecoveryInfo,
@@ -60,6 +61,9 @@ pub struct AppState {
     pub fallback_mgr: Arc<ProxyFallbackManager>,
     /// 🔥 扫描管理器（用户登录后创建）
     pub scan_manager: Arc<RwLock<Option<Arc<ScanManager>>>>,
+
+    /// 🔥 SteamDeck 游戏盒子状态
+    pub gamebox: Arc<GameBoxState>,
 }
 
 impl AppState {
@@ -122,6 +126,9 @@ impl AppState {
             cloud_dl_monitor: Arc::new(RwLock::new(None)),
             fallback_mgr,
             scan_manager: Arc::new(RwLock::new(None)),
+
+            // 🔥 初始化 SteamDeck 游戏盒子
+            gamebox: Arc::new(GameBoxState::new()),
         })
     }
 

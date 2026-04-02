@@ -53,6 +53,13 @@
           <template #title>分享管理</template>
         </el-menu-item>
 
+        <el-divider />
+
+        <el-menu-item index="/gamebox">
+          <el-icon><Gamepad /></el-icon>
+          <template #title>游戏盒子</template>
+        </el-menu-item>
+
         <el-menu-item index="/settings">
           <el-icon><Setting /></el-icon>
           <template #title>系统设置</template>
@@ -125,6 +132,13 @@
           <el-menu-item index="/shares">
             <el-icon><Share /></el-icon>
             <span>分享管理</span>
+          </el-menu-item>
+
+          <el-divider style="margin: 8px 0; border-color: rgba(255,255,255,0.2);" />
+
+          <el-menu-item index="/gamebox">
+            <el-icon><Gamepad /></el-icon>
+            <span>游戏盒子</span>
           </el-menu-item>
 
           <el-menu-item index="/settings">
@@ -255,6 +269,7 @@ import {
   Refresh,
   Lock,
   Link,
+  Gamepad,
 } from '@element-plus/icons-vue'
 
 const route = useRoute()

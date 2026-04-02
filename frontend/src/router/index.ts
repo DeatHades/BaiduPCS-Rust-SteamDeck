@@ -68,6 +68,12 @@ const routes: RouteRecordRaw[] = [
         meta: { title: '分享管理' }
       },
       {
+        path: '/gamebox',
+        name: 'GameBox',
+        component: () => import('@/views/GameBoxView.vue'),
+        meta: { title: '游戏盒子' }
+      },
+      {
         path: '/settings',
         name: 'Settings',
         component: () => import('@/views/SettingsView.vue'),

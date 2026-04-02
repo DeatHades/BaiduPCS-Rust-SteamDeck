@@ -432,6 +432,22 @@ async fn main() -> anyhow::Result<()> {
         // 🔥 自动备份全局触发配置 API
         .route("/config/autobackup/trigger", get(handlers::autobackup::get_trigger_config))
         .route("/config/autobackup/trigger", put(handlers::autobackup::update_trigger_config))
+        // 🔥 SteamDeck 游戏盒子 API
+        .route("/gamebox/config", get(handlers::gamebox::get_config))
+        .route("/gamebox/config", put(handlers::gamebox::update_config))
+        .route("/gamebox/games", get(handlers::gamebox::list_games))
+        .route("/gamebox/games/:id", get(handlers::gamebox::get_game))
+        .route("/gamebox/games/:id", delete(handlers::gamebox::delete_game))
+        .route("/gamebox/scan", post(handlers::gamebox::scan_directory))
+        .route("/gamebox/archives", get(handlers::gamebox::list_archives))
+        .route("/gamebox/install/start", post(handlers::gamebox::start_install))
+        .route("/gamebox/install/status/:task_id", get(handlers::gamebox::get_install_status))
+        .route("/gamebox/executables", post(handlers::gamebox::find_executables))
+        .route("/gamebox/steam/shortcuts", get(handlers::gamebox::list_shortcuts))
+        .route("/gamebox/steam/add", post(handlers::gamebox::add_to_steam))
+        .route("/gamebox/steam/remove/:app_id", delete(handlers::gamebox::remove_from_steam))
+        .route("/gamebox/proton/versions", get(handlers::gamebox::list_proton_versions))
+        .route("/gamebox/proton/set", put(handlers::gamebox::set_proton))
         // 🔥 WebSocket 路由
         .route("/ws", get(websocket::handle_websocket))
         .with_state(app_state.clone())

@@ -10,6 +10,7 @@ pub mod encryption_export;
 pub mod file;
 pub mod filesystem;
 pub mod folder_download;
+pub mod gamebox;
 pub mod share;
 pub mod transfer;
 pub mod upload;
@@ -25,3 +26,6 @@ pub use folder_download::*;
 pub use share::*;
 pub use transfer::*;
 pub use upload::*;
+
+// 导出 gamebox handlers
+pub use gamebox::*;
