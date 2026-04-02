@@ -22,14 +22,14 @@
     />
 
     <!-- 内容区 -->
-    <div class="content-area" v-loading="store.loading">
+    <div class="content-area" v-loading="isLoading">
       <ErrorState
           v-if="store.error"
           :message="store.error"
           @retry="store.refresh"
       />
       <EmptyState
-          v-else-if="!store.loading && store.entries.length === 0"
+          v-else-if="!isLoading && store.entries.length === 0"
       />
       <FileList
           v-else
@@ -50,7 +50,7 @@
     <div v-if="store.hasMore" class="load-more">
       <el-button
           text
-          :loading="store.loading"
+          :loading="isLoading"
           @click="store.loadMore"
       >
         加载更多 ({{ store.entries.length }}/{{ store.total }})
@@ -224,6 +224,9 @@ const emit = defineEmits<{
 }>()
 
 const store = useFilePickerStore()
+
+// 加载状态（直接引用以解决 TypeScript 类型推断问题）
+const isLoading = computed(() => store.loading)
 
 // 下载模式状态
 const setAsDefault = ref(false)

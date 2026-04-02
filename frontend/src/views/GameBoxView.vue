@@ -59,7 +59,7 @@
                 </el-table-column>
               </el-table>
 
-              <el-empty v-else-if="!loading" description="扫描目录以查看压缩包" />
+              <el-empty v-else-if="!isScanning" description="扫描目录以查看压缩包" />
 
               <div class="step-actions">
                 <el-button
@@ -400,6 +400,9 @@ import { formatFileSize, getStatusText, getStatusType } from '@/api/gamebox'
 import type { ArchiveInfo, ExecutableInfo, GameInfo } from '@/api/gamebox'
 
 const store = useGameBoxStore()
+
+// 扫描加载状态（直接引用以解决 TypeScript 类型推断问题）
+const isScanning = computed(() => store.loading)
 
 // ============ 响应式数据 ============
 
