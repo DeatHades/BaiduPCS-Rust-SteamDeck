@@ -28,7 +28,7 @@ pub async fn find_executables(
     let max_depth = req.max_depth.unwrap_or(6);
 
     let executables = ExeFinder::find_executables(&req.directory, max_depth)
-        .map_err(ApiError::from)?;
+        .map_err(GameBoxError::from)?;
 
     Ok(Json(executables))
 }

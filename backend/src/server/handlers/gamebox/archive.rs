@@ -11,7 +11,7 @@ use serde::{Deserialize, Serialize};
 use crate::server::{ApiError, ApiResult};
 use crate::AppState;
 
-use crate::gamebox::{ArchiveInfo, Extractor};
+use crate::gamebox::{ArchiveInfo, Extractor, GameBoxError};
 
 /// 扫描目录请求
 #[derive(Debug, Deserialize)]
@@ -35,7 +35,7 @@ pub async fn scan_directory(
 
     let archives = extractor
         .scan_archives(&req.directory)
-        .map_err(ApiError::from)?;
+        .map_err(GameBoxError::from)?;
 
     Ok(Json(ScanResult {
         directory: req.directory,
@@ -58,7 +58,7 @@ pub async fn list_archives(
 
     let archives = extractor
         .scan_archives(&directory)
-        .map_err(ApiError::from)?;
+        .map_err(GameBoxError::from)?;
 
     Ok(Json(archives))
 }

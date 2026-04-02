@@ -67,7 +67,6 @@ pub async fn start_install(
 
     // 创建 GameBoxState 引用
     let gamebox_state = app_state.gamebox.clone();
-    let game_clone = game.clone();
 
     // 后台执行安装
     tokio::spawn(async move {
@@ -78,7 +77,7 @@ pub async fn start_install(
             &req,
             &task_id,
             &progress_tx,
-            game_clone,
+            game,
         )
         .await;
 
@@ -112,7 +111,7 @@ async fn install_game(
     req: &StartInstallRequest,
     task_id: &str,
     progress_tx: &mpsc::Sender<InstallProgress>,
-    game: GameInfo,
+    mut game: GameInfo,
 ) -> GameBoxResult<()> {
     // 步骤 1: 解压
     let _ = progress_tx
