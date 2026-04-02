@@ -100,6 +100,33 @@ impl From<anyhow::Error> for ApiError {
     }
 }
 
+/// 从 GameBoxError 转换
+impl From<crate::gamebox::GameBoxError> for ApiError {
+    fn from(err: crate::gamebox::GameBoxError) -> Self {
+        use crate::gamebox::GameBoxError;
+        match err {
+            GameBoxError::SteamNotFound => ApiError::NotFound(err.to_string()),
+            GameBoxError::SteamUserNotFound => ApiError::NotFound(err.to_string()),
+            GameBoxError::ShortcutsNotAccessible(_) => ApiError::NotFound(err.to_string()),
+            GameBoxError::ExtractorNotFound => ApiError::BadRequest(err.to_string()),
+            GameBoxError::ExtractionFailed(_) => ApiError::Internal(anyhow::anyhow!(err)),
+            GameBoxError::FileNotFound(_) => ApiError::NotFound(err.to_string()),
+            GameBoxError::DirectoryNotFound(_) => ApiError::NotFound(err.to_string()),
+            GameBoxError::ExecutableNotFound => ApiError::NotFound(err.to_string()),
+            GameBoxError::AddShortcutFailed(_) => ApiError::Internal(anyhow::anyhow!(err)),
+            GameBoxError::SetProtonFailed(_) => ApiError::Internal(anyhow::anyhow!(err)),
+            GameBoxError::VdfReadFailed(_) => ApiError::Internal(anyhow::anyhow!(err)),
+            GameBoxError::VdfWriteFailed(_) => ApiError::Internal(anyhow::anyhow!(err)),
+            GameBoxError::ConfigSaveFailed(_) => ApiError::Internal(anyhow::anyhow!(err)),
+            GameBoxError::ConfigLoadFailed(_) => ApiError::Internal(anyhow::anyhow!(err)),
+            GameBoxError::TaskNotFound(_) => ApiError::NotFound(err.to_string()),
+            GameBoxError::TaskInProgress(_) => ApiError::Conflict(err.to_string()),
+            GameBoxError::IoError(_) => ApiError::Internal(anyhow::anyhow!(err)),
+            GameBoxError::JsonError(_) => ApiError::Internal(anyhow::anyhow!(err)),
+        }
+    }
+}
+
 /// Result 类型别名
 pub type ApiResult<T> = Result<T, ApiError>;
 

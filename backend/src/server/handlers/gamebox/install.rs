@@ -16,6 +16,7 @@ use crate::gamebox::{
     ExeFinder, Extractor, GameBoxError, GameBoxResult, GameBoxState, GameInfo, GameStatus,
     InstallProgress, InstallStep, SteamManager,
 };
+use crate::server::error::ApiError;
 
 /// 开始安装任务
 #[derive(Debug, Deserialize)]
@@ -77,7 +78,7 @@ pub async fn start_install(
             &req,
             &task_id,
             &progress_tx,
-            &game_clone,
+            game_clone,
         )
         .await;
 
@@ -100,7 +101,7 @@ pub async fn start_install(
     if let Some(progress) = progress_rx.recv().await {
         Ok(Json(progress))
     } else {
-        Err(GameBoxError::IoError("无法获取安装进度".to_string()).into())
+        Err(ApiError::Internal(anyhow::anyhow!("无法获取安装进度")))
     }
 }
 
@@ -111,7 +112,7 @@ async fn install_game(
     req: &StartInstallRequest,
     task_id: &str,
     progress_tx: &mpsc::Sender<InstallProgress>,
-    mut game: GameInfo,
+    game: GameInfo,
 ) -> GameBoxResult<()> {
     // 步骤 1: 解压
     let _ = progress_tx

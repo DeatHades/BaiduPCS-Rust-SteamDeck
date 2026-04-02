@@ -8,7 +8,7 @@ use axum::{
 };
 use serde::{Deserialize, Serialize};
 
-use crate::server::ApiResult;
+use crate::server::{ApiError, ApiResult};
 use crate::AppState;
 
 use crate::gamebox::{ExeFinder, ExecutableInfo, GameInfo, GameStatus, ProtonVersion, ShortcutInfo, SteamManager};
@@ -27,7 +27,8 @@ pub async fn find_executables(
 ) -> ApiResult<Json<Vec<ExecutableInfo>>> {
     let max_depth = req.max_depth.unwrap_or(6);
 
-    let executables = ExeFinder::find_executables(&req.directory, max_depth)?;
+    let executables = ExeFinder::find_executables(&req.directory, max_depth)
+        .map_err(ApiError::from)?;
 
     Ok(Json(executables))
 }
@@ -36,8 +37,10 @@ pub async fn find_executables(
 pub async fn list_shortcuts(
     State(_app_state): State<Arc<AppState>>,
 ) -> ApiResult<Json<Vec<ShortcutInfo>>> {
-    let steam_manager = SteamManager::detect()?;
-    let shortcuts = steam_manager.list_shortcuts()?;
+    let steam_manager = SteamManager::detect()
+        .map_err(ApiError::from)?;
+    let shortcuts = steam_manager.list_shortcuts()
+        .map_err(ApiError::from)?;
 
     Ok(Json(shortcuts))
 }
@@ -62,7 +65,8 @@ pub async fn add_to_steam(
     State(_app_state): State<Arc<AppState>>,
     Json(req): Json<AddToSteamRequest>,
 ) -> ApiResult<Json<AddToSteamResponse>> {
-    let steam_manager = SteamManager::detect()?;
+    let steam_manager = SteamManager::detect()
+        .map_err(ApiError::from)?;
 
     let game = GameInfo {
         id: uuid::Uuid::new_v4().to_string(),
@@ -77,7 +81,8 @@ pub async fn add_to_steam(
         updated_at: chrono::Utc::now().timestamp(),
     };
 
-    let app_id = steam_manager.add_shortcut(&game)?;
+    let app_id = steam_manager.add_shortcut(&game)
+        .map_err(ApiError::from)?;
 
     Ok(Json(AddToSteamResponse {
         app_id,
@@ -90,8 +95,10 @@ pub async fn remove_from_steam(
     State(_app_state): State<Arc<AppState>>,
     Path(app_id): Path<u64>,
 ) -> ApiResult<Json<serde_json::Value>> {
-    let steam_manager = SteamManager::detect()?;
-    steam_manager.remove_shortcut(app_id)?;
+    let steam_manager = SteamManager::detect()
+        .map_err(ApiError::from)?;
+    steam_manager.remove_shortcut(app_id)
+        .map_err(ApiError::from)?;
 
     Ok(Json(serde_json::json!({
         "success": true,
@@ -152,8 +159,10 @@ pub async fn set_proton(
     State(_app_state): State<Arc<AppState>>,
     Json(req): Json<SetProtonRequest>,
 ) -> ApiResult<Json<serde_json::Value>> {
-    let steam_manager = SteamManager::detect()?;
-    steam_manager.set_proton(req.app_id, &req.proton_version)?;
+    let steam_manager = SteamManager::detect()
+        .map_err(ApiError::from)?;
+    steam_manager.set_proton(req.app_id, &req.proton_version)
+        .map_err(ApiError::from)?;
 
     Ok(Json(serde_json::json!({
         "success": true,

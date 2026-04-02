@@ -8,10 +8,10 @@ use axum::{
 };
 use serde::{Deserialize, Serialize};
 
-use crate::server::ApiResult;
+use crate::server::{ApiError, ApiResult};
 use crate::AppState;
 
-use crate::gamebox::{ArchiveInfo, Extractor, GameBoxState};
+use crate::gamebox::{ArchiveInfo, Extractor};
 
 /// 扫描目录请求
 #[derive(Debug, Deserialize)]
@@ -33,12 +33,19 @@ pub async fn scan_directory(
 ) -> ApiResult<Json<ScanResult>> {
     let extractor = Extractor::new(app_state.gamebox.clone());
 
-    let archives = extractor.scan_archives(&req.directory)?;
+    let archives = extractor
+        .scan_archives(&req.directory)
+        .map_err(ApiError::from)?;
 
     Ok(Json(ScanResult {
         directory: req.directory,
         archives,
     }))
+}
+
+#[derive(Debug, Deserialize)]
+pub struct ScanDirectoryQuery {
+    pub directory: Option<String>,
 }
 
 /// 获取目录下的压缩包列表
@@ -49,12 +56,9 @@ pub async fn list_archives(
     let extractor = Extractor::new(app_state.gamebox.clone());
     let directory = params.directory.unwrap_or_else(|| "~/Downloads".to_string());
 
-    let archives = extractor.scan_archives(&directory)?;
+    let archives = extractor
+        .scan_archives(&directory)
+        .map_err(ApiError::from)?;
 
     Ok(Json(archives))
-}
-
-#[derive(Debug, Deserialize)]
-pub struct ScanDirectoryQuery {
-    pub directory: Option<String>,
 }
