@@ -1,8 +1,7 @@
 //! Steam shortcuts 和 Proton 配置管理
 
-use std::collections::HashMap;
 use std::fs;
-use std::io::{Read, Write as IoWrite, Seek, SeekFrom};
+use std::io::{Read, Write as IoWrite};
 use std::path::PathBuf;
 
 use super::error::{GameBoxError, GameBoxResult};

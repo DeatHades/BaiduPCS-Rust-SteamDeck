@@ -3,18 +3,18 @@
 use std::sync::Arc;
 
 use axum::{
-    extract::{Path, Query, State},
+    extract::{Path, State},
     Json,
 };
 use serde::{Deserialize, Serialize};
 use tokio::sync::mpsc;
 
-use crate::server::handlers::ApiResult;
+use crate::server::ApiResult;
 use crate::AppState;
 
-use super::super::super::gamebox::{
+use crate::gamebox::{
     ExeFinder, Extractor, GameBoxError, GameBoxResult, GameBoxState, GameInfo, GameStatus,
-    InstallProgress, InstallRequest, InstallStep, SteamManager,
+    InstallProgress, InstallStep, SteamManager,
 };
 
 /// 开始安装任务

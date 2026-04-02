@@ -8,10 +8,10 @@ use axum::{
 };
 use serde::{Deserialize, Serialize};
 
-use crate::server::handlers::ApiResult;
+use crate::server::ApiResult;
 use crate::AppState;
 
-use super::super::super::gamebox::{ArchiveInfo, Extractor, GameBoxState};
+use crate::gamebox::{ArchiveInfo, Extractor, GameBoxState};
 
 /// 扫描目录请求
 #[derive(Debug, Deserialize)]

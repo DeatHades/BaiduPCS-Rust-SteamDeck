@@ -8,10 +8,10 @@ use axum::{
 };
 use serde::{Deserialize, Serialize};
 
-use crate::server::handlers::ApiResult;
+use crate::server::ApiResult;
 use crate::AppState;
 
-use super::super::super::gamebox::{GameBoxConfig, GameInfo, GameBoxState};
+use crate::gamebox::{GameBoxConfig, GameInfo, GameBoxState};
 
 /// 获取配置
 pub async fn get_config(

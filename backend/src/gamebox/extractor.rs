@@ -6,10 +6,9 @@ use std::sync::Arc;
 
 use tokio::io::{AsyncBufReadExt, BufReader};
 use tokio::process::Command;
-use walkdir::WalkDir;
 
 use super::error::{GameBoxError, GameBoxResult};
-use super::types::{ArchiveInfo, ExecutableInfo};
+use super::types::ArchiveInfo;
 use super::GameBoxState;
 
 /// 支持的压缩包扩展名

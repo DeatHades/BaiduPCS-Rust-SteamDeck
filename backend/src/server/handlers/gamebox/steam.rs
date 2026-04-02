@@ -8,10 +8,10 @@ use axum::{
 };
 use serde::{Deserialize, Serialize};
 
-use crate::server::handlers::ApiResult;
+use crate::server::ApiResult;
 use crate::AppState;
 
-use super::super::super::gamebox::{ExeFinder, ExecutableInfo, GameInfo, GameStatus, ProtonVersion, ShortcutInfo, SteamManager};
+use crate::gamebox::{ExeFinder, ExecutableInfo, GameInfo, GameStatus, ProtonVersion, ShortcutInfo, SteamManager};
 
 /// 查找可执行文件请求
 #[derive(Debug, Deserialize)]
@@ -103,8 +103,6 @@ pub async fn remove_from_steam(
 pub async fn list_proton_versions(
     State(_app_state): State<Arc<AppState>>,
 ) -> ApiResult<Json<Vec<ProtonVersion>>> {
-    use super::super::super::gamebox::SteamManager;
-
     let steam_manager: SteamManager = match SteamManager::detect() {
         Ok(sm) => sm,
         Err(_) => {
