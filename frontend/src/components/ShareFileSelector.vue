@@ -110,8 +110,9 @@ interface PathEntry {
 }
 
 const props = defineProps<{
-  files: SharedFileInfo[]
+  /** 是否显示加载状态 */
   loading: boolean
+  files: SharedFileInfo[]
   shareInfo?: PreviewShareInfo | null
   /** 首次预览的分享链接（用于根目录分页加载） */
   shareUrl?: string

@@ -56,7 +56,7 @@
         <el-divider />
 
         <el-menu-item index="/gamebox">
-          <el-icon><Gamepad /></el-icon>
+          <el-icon><Monitor /></el-icon>
           <template #title>游戏盒子</template>
         </el-menu-item>
 
@@ -137,7 +137,7 @@
           <el-divider style="margin: 8px 0; border-color: rgba(255,255,255,0.2);" />
 
           <el-menu-item index="/gamebox">
-            <el-icon><Gamepad /></el-icon>
+            <el-icon><Monitor /></el-icon>
             <span>游戏盒子</span>
           </el-menu-item>
 
@@ -269,7 +269,7 @@ import {
   Refresh,
   Lock,
   Link,
-  Gamepad,
+  Monitor,
 } from '@element-plus/icons-vue'
 
 const route = useRoute()

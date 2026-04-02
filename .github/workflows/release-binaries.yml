@@ -1,24 +1,14 @@
-name: Release Multi-Platform Binaries
+name: Release Linux x86_64 Binary
 
 on:
   push:
     tags:
       - 'v*'
-  workflow_dispatch:   # 支持手动触发
+  workflow_dispatch:
 
 jobs:
   build-and-release:
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - platform: linux-x86_64
-            os: ubuntu-latest
-            target: x86_64-unknown-linux-gnu
-            archive: tar
-            binary: baidu-netdisk-rust
-            use_cross: false
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
     permissions:
       contents: write
 
@@ -29,7 +19,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 18
+          node-version: '22'
           cache: 'npm'
           cache-dependency-path: frontend/package-lock.json
 
@@ -41,23 +31,14 @@ jobs:
         run: npm run build
         working-directory: frontend
 
-      - name: Install system dependencies (Linux)
-        if: matrix.os == 'ubuntu-latest'
-        run: sudo apt-get update && sudo apt-get install -y pkg-config libssl-dev zip
+      - name: Install system dependencies
+        run: sudo apt-get update && sudo apt-get install -y pkg-config libssl-dev
 
       - name: Set up Rust toolchain
         uses: dtolnay/rust-toolchain@v1
         with:
           toolchain: stable
-          targets: ${{ matrix.target }}
-
-      - name: Install cargo-zigbuild
-        if: matrix.use_zigbuild == true
-        run: |
-          pip3 install ziglang
-          cargo install cargo-zigbuild
-          # Verify installation by checking if command exists
-          command -v cargo-zigbuild || which cargo-zigbuild || echo "cargo-zigbuild installed"
+          targets: x86_64-unknown-linux-gnu
 
       - name: Build backend
         shell: bash
@@ -65,60 +46,26 @@ jobs:
           OPENSSL_STATIC: 1
           OPENSSL_VENDORED: 1
         run: |
-          set -e
           cd backend
-          if [ "${{ matrix.use_zigbuild }}" = "true" ]; then
-            echo "Building with cargo-zigbuild for ${{ matrix.target }}..."
-            # Enable OpenSSL vendored for cross-compilation to musl targets
-            # This tells openssl-sys to compile OpenSSL from source
-            cargo zigbuild --release --target ${{ matrix.target }}
-          else
-            echo "Building with cargo for ${{ matrix.target }}..."
-            cargo build --release --target ${{ matrix.target }}
-          fi
+          cargo build --release --target x86_64-unknown-linux-gnu
 
-      - name: Set up Python (for zip packaging)
-        if: matrix.archive == 'zip'
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.x'
-
-      - name: Prepare package
+      - name: Package binary
         shell: bash
         run: |
           set -e
-          ARTIFACT_NAME=BaiduPCS-Rust-${GITHUB_REF_NAME}-${{ matrix.platform }}
-          export ARTIFACT_NAME
+          ARTIFACT_NAME=BaiduPCS-Rust-${GITHUB_REF_NAME}-linux-x86_64
           PKG_DIR=release/$ARTIFACT_NAME
           mkdir -p "$PKG_DIR"
 
-          BIN_PATH="backend/target/${{ matrix.target }}/release/${{ matrix.binary }}"
-          cp "$BIN_PATH" "$PKG_DIR/"
-          chmod +x "$PKG_DIR/${{ matrix.binary }}" || true
+          cp backend/target/x86_64-unknown-linux-gnu/release/baidu-netdisk-rust "$PKG_DIR/"
+          chmod +x "$PKG_DIR/baidu-netdisk-rust"
 
           cp -R frontend/dist "$PKG_DIR/frontend"
-          mkdir -p "$PKG_DIR/config"
-          # 复制配置文件示例，同时创建实际的配置文件供用户使用
-          cp config/app.toml.example "$PKG_DIR/config/app.toml.example"
-          cp config/app.toml.example "$PKG_DIR/config/app.toml"
+          cp config/app.toml.example "$PKG_DIR/config.toml.example"
           cp README.md "$PKG_DIR/README.md"
 
-          echo "ARTIFACT_NAME=$ARTIFACT_NAME" >> $GITHUB_ENV
-
-          if [ "${{ matrix.archive }}" = "zip" ]; then
-            ARCHIVE_PATH="release/${ARTIFACT_NAME}.zip"
-            # Try python3 first, fallback to python
-            if command -v python3 &> /dev/null; then
-              python3 -c "import os, shutil; artifact = os.environ['ARTIFACT_NAME']; shutil.make_archive(os.path.join('release', artifact), 'zip', 'release', artifact)"
-            else
-              python -c "import os, shutil; artifact = os.environ['ARTIFACT_NAME']; shutil.make_archive(os.path.join('release', artifact), 'zip', 'release', artifact)"
-            fi
-          else
-            ARCHIVE_PATH="release/${ARTIFACT_NAME}.tar.gz"
-            tar czf "$ARCHIVE_PATH" -C release "$ARTIFACT_NAME"
-          fi
-
-          echo "ARCHIVE_PATH=$ARCHIVE_PATH" >> $GITHUB_ENV
+          tar czf "release/${ARTIFACT_NAME}.tar.gz" -C release "$ARTIFACT_NAME"
+          echo "ARCHIVE_PATH=release/${ARTIFACT_NAME}.tar.gz" >> $GITHUB_ENV
 
       - name: Upload to GitHub Release
         uses: softprops/action-gh-release@v2
