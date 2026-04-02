@@ -1,7 +1,5 @@
 //! GameBox Steam 相关 API
 
-use std::sync::Arc;
-
 use axum::{
     extract::{Path, State},
     Json,
@@ -22,7 +20,7 @@ pub struct FindExecutablesRequest {
 
 /// 查找可执行文件
 pub async fn find_executables(
-    State(_app_state): State<Arc<AppState>>,
+    State(_app_state): State<AppState>,
     Json(req): Json<FindExecutablesRequest>,
 ) -> ApiResult<Json<Vec<ExecutableInfo>>> {
     let max_depth = req.max_depth.unwrap_or(6);
@@ -35,7 +33,7 @@ pub async fn find_executables(
 
 /// 获取 Steam 快捷方式列表
 pub async fn list_shortcuts(
-    State(_app_state): State<Arc<AppState>>,
+    State(_app_state): State<AppState>,
 ) -> ApiResult<Json<Vec<ShortcutInfo>>> {
     let steam_manager = SteamManager::detect()
         .map_err(ApiError::from)?;
@@ -62,7 +60,7 @@ pub struct AddToSteamResponse {
 
 /// 添加游戏到 Steam
 pub async fn add_to_steam(
-    State(_app_state): State<Arc<AppState>>,
+    State(_app_state): State<AppState>,
     Json(req): Json<AddToSteamRequest>,
 ) -> ApiResult<Json<AddToSteamResponse>> {
     let steam_manager = SteamManager::detect()
@@ -92,7 +90,7 @@ pub async fn add_to_steam(
 
 /// 从 Steam 移除游戏
 pub async fn remove_from_steam(
-    State(_app_state): State<Arc<AppState>>,
+    State(_app_state): State<AppState>,
     Path(app_id): Path<u64>,
 ) -> ApiResult<Json<serde_json::Value>> {
     let steam_manager = SteamManager::detect()
@@ -108,7 +106,7 @@ pub async fn remove_from_steam(
 
 /// 获取可用的 Proton 版本
 pub async fn list_proton_versions(
-    State(_app_state): State<Arc<AppState>>,
+    State(_app_state): State<AppState>,
 ) -> ApiResult<Json<Vec<ProtonVersion>>> {
     let steam_manager: SteamManager = match SteamManager::detect() {
         Ok(sm) => sm,
@@ -156,7 +154,7 @@ pub struct SetProtonRequest {
 }
 
 pub async fn set_proton(
-    State(_app_state): State<Arc<AppState>>,
+    State(_app_state): State<AppState>,
     Json(req): Json<SetProtonRequest>,
 ) -> ApiResult<Json<serde_json::Value>> {
     let steam_manager = SteamManager::detect()

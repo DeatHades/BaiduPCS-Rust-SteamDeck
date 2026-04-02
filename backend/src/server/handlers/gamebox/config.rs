@@ -1,7 +1,3 @@
-//! GameBox 配置管理 API
-
-use std::sync::Arc;
-
 use axum::{
     extract::State,
     Json,
@@ -11,11 +7,11 @@ use serde::{Deserialize, Serialize};
 use crate::server::ApiResult;
 use crate::AppState;
 
-use crate::gamebox::{GameBoxConfig, GameInfo, GameBoxState};
+use crate::gamebox::{GameBoxConfig, GameInfo};
 
 /// 获取配置
 pub async fn get_config(
-    State(app_state): State<Arc<AppState>>,
+    State(app_state): State<AppState>,
 ) -> ApiResult<Json<GameBoxConfig>> {
     let config = app_state.gamebox.config.read().clone();
     Ok(Json(config))
@@ -31,7 +27,7 @@ pub struct UpdateConfigRequest {
 }
 
 pub async fn update_config(
-    State(app_state): State<Arc<AppState>>,
+    State(app_state): State<AppState>,
     Json(req): Json<UpdateConfigRequest>,
 ) -> ApiResult<Json<GameBoxConfig>> {
     let mut config = app_state.gamebox.config.write();
@@ -60,7 +56,7 @@ pub async fn update_config(
 
 /// 获取游戏列表
 pub async fn list_games(
-    State(app_state): State<Arc<AppState>>,
+    State(app_state): State<AppState>,
 ) -> ApiResult<Json<Vec<GameInfo>>> {
     let games = app_state.gamebox.get_games();
     Ok(Json(games))
@@ -74,7 +70,7 @@ pub struct GameInfoResponse {
 }
 
 pub async fn get_game(
-    State(app_state): State<Arc<AppState>>,
+    State(app_state): State<AppState>,
     axum::extract::Path(game_id): axum::extract::Path<String>,
 ) -> ApiResult<Json<GameInfoResponse>> {
     let game = app_state.gamebox.get_game(&game_id);
@@ -87,7 +83,7 @@ pub async fn get_game(
 
 /// 删除游戏记录
 pub async fn delete_game(
-    State(app_state): State<Arc<AppState>>,
+    State(app_state): State<AppState>,
     axum::extract::Path(game_id): axum::extract::Path<String>,
 ) -> ApiResult<Json<serde_json::Value>> {
     let removed = app_state.gamebox.remove_game(&game_id);

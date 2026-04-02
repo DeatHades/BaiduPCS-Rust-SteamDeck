@@ -32,7 +32,7 @@ pub struct StartInstallRequest {
 
 /// 启动安装流程
 pub async fn start_install(
-    State(app_state): State<Arc<AppState>>,
+    State(app_state): State<AppState>,
     Json(req): Json<StartInstallRequest>,
 ) -> ApiResult<Json<InstallProgress>> {
     let task_id = uuid::Uuid::new_v4().to_string();
@@ -249,7 +249,7 @@ pub struct ProgressResponse {
 }
 
 pub async fn get_install_status(
-    State(_app_state): State<Arc<AppState>>,
+    State(_app_state): State<AppState>,
     Path(task_id): Path<String>,
 ) -> ApiResult<Json<ProgressResponse>> {
     // TODO: 从安装任务列表中获取进度
